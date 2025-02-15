@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import UserMenu from "../../components/UserMenu";
-import Layout from "./../../components/Layout";
 import axios from "axios";
-import { useAuth } from "../../context/auth";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
+import UserMenu from "../../components/UserMenu";
+import { useAuth } from "../../context/auth";
+import Layout from "./../../components/Layout";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [auth, setAuth] = useAuth();
+
   const getOrders = async () => {
     try {
       const { data } = await axios.get("/api/v1/auth/orders");
@@ -48,7 +49,7 @@ const Orders = () => {
                         <td>{i + 1}</td>
                         <td>{o?.status}</td>
                         <td>{o?.buyer?.name}</td>
-                        <td>{moment(o?.createAt).fromNow()}</td>
+                        <td>{moment(o?.createdAt).fromNow()}</td>
                         <td>{o?.payment.success ? "Success" : "Failed"}</td>
                         <td>{o?.products?.length}</td>
                       </tr>
