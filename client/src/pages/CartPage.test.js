@@ -205,23 +205,28 @@ describe("CartPage Component - User is Logged In", () => {
       expect(getAllByText("Remove")[0]).toBeEnabled();
     });
 
-    fireEvent.click(getAllByText("Remove")[0]);
+    act(() => {
+      fireEvent.click(getAllByText("Remove")[0]);
+    });
 
     useCart.mockReturnValue([cartState, setCartMock]);
-    rerender(
-      <MemoryRouter initialEntries={["/cart"]}>
-        <Routes>
-          <Route path="/cart" element={<CartPage />} />
-        </Routes>
-      </MemoryRouter>
-    );
+
+    await act(async () => {
+      rerender(
+        <MemoryRouter initialEntries={["/cart"]}>
+          <Routes>
+            <Route path="/cart" element={<CartPage />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
 
     await waitFor(() => {
       expect(getAllByText("Remove").length).toBe(2);
     });
   });
 
-  it("should navigate to profile page when 'Update Address' button is clicked", () => {
+  it("should navigate to profile page when 'Update Address' button is clicked", async () => {
     useCart.mockReturnValue([cartDetails, jest.fn()]);
 
     const { getByText } = render(
@@ -235,7 +240,9 @@ describe("CartPage Component - User is Logged In", () => {
     const updateAddressButton = getByText("Update Address");
     expect(updateAddressButton).toBeInTheDocument();
 
-    fireEvent.click(updateAddressButton);
+    await act(async () => {
+      fireEvent.click(updateAddressButton);
+    });
 
     expect(mockNavigate).toHaveBeenCalledWith("/dashboard/user/profile");
   });
@@ -289,7 +296,9 @@ describe("CartPage Component - User is Logged In", () => {
       expect(queryByText("Make Payment")).toBeEnabled();
     });
 
-    fireEvent.click(queryByText("Make Payment"));
+    act(() => {
+      fireEvent.click(queryByText("Make Payment"));
+    });
 
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledWith(
@@ -421,7 +430,9 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
       expect(getAllByText("Remove")[0]).toBeEnabled();
     });
 
-    fireEvent.click(getAllByText("Remove")[0]);
+    act(() => {
+      fireEvent.click(getAllByText("Remove")[0]);
+    });
 
     useCart.mockReturnValue([cartState, setCartMock]);
     rerender(
@@ -437,7 +448,7 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
     });
   });
 
-  it("should navigate to login page when 'Plase Login to checkout' button is clicked", () => {
+  it("should navigate to login page when 'Plase Login to checkout' button is clicked", async () => {
     useCart.mockReturnValue([cartDetails, jest.fn()]);
 
     const { getByText } = render(
@@ -451,7 +462,9 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
     const loginButton = getByText("Plase Login to checkout");
     expect(loginButton).toBeInTheDocument();
 
-    fireEvent.click(loginButton);
+    await act(async () => {
+      fireEvent.click(loginButton);
+    });
 
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
       state: "/cart",
