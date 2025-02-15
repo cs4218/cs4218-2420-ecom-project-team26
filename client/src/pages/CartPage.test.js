@@ -233,6 +233,48 @@ describe("CartPage Component - User is Logged In", () => {
       <MemoryRouter initialEntries={["/cart"]}>
         <Routes>
           <Route path="/cart" element={<CartPage />} />
+          <Route
+            path="/dashboard/user/profile"
+            element={<div>Mocked Profile Page</div>}
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const updateAddressButton = getByText("Update Address");
+    expect(updateAddressButton).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(updateAddressButton);
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard/user/profile");
+  });
+
+  it("should navigate to profile page when 'Update Address' button is clicked and has no address", async () => {
+    useCart.mockReturnValue([cartDetails, jest.fn()]);
+    useAuth.mockReturnValue([
+      {
+        user: {
+          email: "test@example.com",
+          name: "Admin",
+          phone: "81234567",
+          role: 0,
+          _id: "1",
+        },
+        token: "mocked-auth-token",
+      },
+      jest.fn(),
+    ]);
+
+    const { getByText } = render(
+      <MemoryRouter initialEntries={["/cart"]}>
+        <Routes>
+          <Route path="/cart" element={<CartPage />} />
+          <Route
+            path="/dashboard/user/profile"
+            element={<div>Mocked Profile Page</div>}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -313,6 +355,35 @@ describe("CartPage Component - User is Logged In", () => {
       expect(toast.success).toHaveBeenCalledWith(
         "Payment Completed Successfully "
       );
+    });
+  });
+
+  it("error should be caught while making payment", async () => {
+    useCart.mockReturnValue([cartDetails, jest.fn()]);
+    axios.post.mockRejectedValue(new Error("Payment Error"));
+
+    const { queryByText } = render(
+      <MemoryRouter initialEntries={["/cart"]}>
+        <Routes>
+          <Route path="/cart" element={<CartPage />} />
+          <Route
+            path="/dashboard/user/orders"
+            element={<div>Mocked Orders Page</div>}
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(queryByText("Make Payment")).toBeEnabled();
+    });
+
+    act(() => {
+      fireEvent.click(queryByText("Make Payment"));
+    });
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(new Error("Payment Error"));
     });
   });
 });
@@ -468,6 +539,82 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
 
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
       state: "/cart",
+    });
+  });
+
+  it("error should be caught while removing items", async () => {
+    let cartState = [...cartDetails];
+    const setCartMock = jest.fn().mockImplementation(() => {
+      throw new Error("Cart Error");
+    });
+    useCart.mockReturnValue([cartState, setCartMock]);
+
+    const { getAllByText } = render(
+      <MemoryRouter initialEntries={["/cart"]}>
+        <Routes>
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(getAllByText("Remove").length).toBe(3);
+
+    await waitFor(() => {
+      expect(getAllByText("Remove")[0]).toBeEnabled();
+    });
+
+    act(() => {
+      fireEvent.click(getAllByText("Remove")[0]);
+    });
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(new Error("Cart Error"));
+    });
+  });
+
+  it("error should be caught while setting token", async () => {
+    useCart.mockReturnValue([cartDetails, jest.fn()]);
+    axios.get.mockRejectedValue(new Error("Token Error"));
+
+    render(
+      <MemoryRouter initialEntries={["/cart"]}>
+        <Routes>
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/braintree/token");
+    });
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(new Error("Token Error"));
+    });
+  });
+
+  it("error should be caught while converting price", async () => {
+    jest.spyOn(Number.prototype, "toLocaleString").mockImplementation(() => {
+      throw new Error("Locale string error");
+    });
+    useCart.mockReturnValue([cartDetails, jest.fn()]);
+
+    render(
+      <MemoryRouter initialEntries={["/cart"]}>
+        <Routes>
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/braintree/token");
+    });
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(
+        new Error("Locale string error")
+      );
     });
   });
 });
