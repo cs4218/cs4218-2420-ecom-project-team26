@@ -113,6 +113,9 @@ describe("Profile Component", () => {
     fireEvent.change(getByPlaceholderText("Enter Your Password"), {
       target: { value: "Password123!" },
     });
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test2@example.com" },
+    });
     fireEvent.change(getByPlaceholderText("Enter Your Phone"), {
       target: { value: "91234567" },
     });
