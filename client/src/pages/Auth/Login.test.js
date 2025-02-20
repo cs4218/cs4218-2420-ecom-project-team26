@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/extend-expect";
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
@@ -42,6 +42,12 @@ window.matchMedia =
       removeListener: function () {},
     };
   };
+
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 describe("Login Component", () => {
   beforeEach(() => {
@@ -154,5 +160,53 @@ describe("Login Component", () => {
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
     expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+  });
+
+  it("should display error message on failed login", async () => {
+    axios.post.mockResolvedValueOnce({
+      data: { success: false, message: "Login Failed" },
+    });
+
+    const { getByPlaceholderText, getByText } = render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(getByText("LOGIN"));
+
+    await waitFor(() => expect(axios.post).toHaveBeenCalled());
+    expect(toast.error).toHaveBeenCalledWith("Login Failed");
+  });
+
+  it("should navigate to forgot password page when 'Forgot Password' button is clicked", async () => {
+    axios.post.mockRejectedValueOnce({ message: "Invalid credentials" });
+
+    const { getByText } = render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/forgot-password"
+            element={<div>Mocked Forgot Password Page</div>}
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const forgotPasswordBtn = getByText("Forgot Password");
+
+    await act(async () => {
+      fireEvent.click(forgotPasswordBtn);
+    });
+    expect(mockNavigate).toHaveBeenCalledWith("/forgot-password");
   });
 });
