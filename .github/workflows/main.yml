@@ -30,4 +30,7 @@ jobs:
           npm install
 
       - name: Run Jest tests
-        run: npm test
+        run: |
+          npm run test:frontend &
+          npm run test:backend &
+          wait
