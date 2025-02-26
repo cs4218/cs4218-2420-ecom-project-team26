@@ -31,6 +31,5 @@ jobs:
 
       - name: Run Jest tests
         run: |
-          npm run test:frontend &
-          npm run test:backend &
-          wait
+          npm run test:frontend
+          npm run test:backend
