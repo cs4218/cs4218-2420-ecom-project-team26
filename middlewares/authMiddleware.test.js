@@ -95,7 +95,7 @@ describe("isAdmin middleware component", () => {
     jest.clearAllMocks();
     jest.spyOn(global.console, "log");
     req = {
-      headers: { authorization: "Bear 123456789" },
+      headers: { authorization: "Bearer 123456789" },
       user: {},
     };
     res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
