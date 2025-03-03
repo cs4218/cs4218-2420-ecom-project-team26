@@ -23,7 +23,6 @@ module.exports = {
   testMatch: [
     "<rootDir>/client/src/pages/Auth/*.test.js",
     "<rootDir>/client/src/pages/user/*.test.js",
-    "<rootDir>/client/src/pages/user/*.test.js",
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/pages/*.test.js",
   ],
@@ -35,7 +34,6 @@ module.exports = {
     "client/src/pages/user/**",
     "client/src/context/**",
     "client/src/pages/**",
-    "client/src/pages/user/**",
   ],
   coverageThreshold: {
     global: {
