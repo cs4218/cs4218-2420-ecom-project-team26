@@ -10,6 +10,7 @@ module.exports = {
     "<rootDir>/controllers/*.test.js",
     "<rootDir>/helpers/*.test.js",
     "<rootDir>/middlewares/*.test.js",
+    "<rootDir>/config/*.test.js",
   ],
 
   // jest code coverage
