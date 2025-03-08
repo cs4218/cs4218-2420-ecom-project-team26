@@ -47,7 +47,11 @@ jest.mock("moment", () => {
 describe("Orders Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("does not render the orders page if not authenticated", async () => {
