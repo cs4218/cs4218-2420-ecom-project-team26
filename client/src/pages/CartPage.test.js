@@ -1,22 +1,19 @@
+/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
-import {
-  act,
-  fireEvent,
-  getAllByAltText,
-  render,
-  waitFor,
-} from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import axios from "axios";
 import DropIn from "braintree-web-drop-in-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { useCart } from "../context/cart";
 import CartPage from "./CartPage";
 
 jest.mock("axios");
 jest.mock("react-hot-toast");
+
+jest.mock("../styles/CartStyles.css", () => {});
 
 jest.mock(
   "../components/Layout",
@@ -76,7 +73,7 @@ const cartDetails = [
 describe("CartPage Component - User is Logged In", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
     useAuth.mockReturnValue([
       {
         user: {
@@ -106,6 +103,10 @@ describe("CartPage Component - User is Logged In", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("empty cart page should render", async () => {
@@ -187,9 +188,9 @@ describe("CartPage Component - User is Logged In", () => {
   });
 
   it("should be able remove items", async () => {
-    let cartState = [...cartDetails];
-    const setCartMock = jest.fn((newCart) => (cartState = newCart));
-    useCart.mockReturnValue([cartState, setCartMock]);
+    let cart = [...cartDetails];
+    const setCartMock = jest.fn((newCart) => (cart = newCart));
+    useCart.mockReturnValue([cart, setCartMock]);
 
     const { getAllByText, rerender } = render(
       <MemoryRouter initialEntries={["/cart"]}>
@@ -209,7 +210,7 @@ describe("CartPage Component - User is Logged In", () => {
       fireEvent.click(getAllByText("Remove")[0]);
     });
 
-    useCart.mockReturnValue([cartState, setCartMock]);
+    useCart.mockReturnValue([cart, setCartMock]);
 
     await act(async () => {
       rerender(
@@ -224,6 +225,8 @@ describe("CartPage Component - User is Logged In", () => {
     await waitFor(() => {
       expect(getAllByText("Remove").length).toBe(2);
     });
+
+    expect(cart).toStrictEqual(cartDetails.slice(1));
   });
 
   it("should navigate to profile page when 'Update Address' button is clicked", async () => {
@@ -290,7 +293,8 @@ describe("CartPage Component - User is Logged In", () => {
   });
 
   it("should be able to make payment", async () => {
-    useCart.mockReturnValue([cartDetails, jest.fn()]);
+    const setCart = jest.fn();
+    useCart.mockReturnValue([cartDetails, setCart]);
 
     axios.post.mockResolvedValue({
       data: { response: "Payment successful!" },
@@ -351,6 +355,9 @@ describe("CartPage Component - User is Logged In", () => {
         }
       );
     });
+
+    expect(localStorage.removeItem).toHaveBeenCalledWith("cart");
+    expect(setCart).toHaveBeenCalledWith([]);
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith(
         "Payment Completed Successfully "
@@ -388,10 +395,10 @@ describe("CartPage Component - User is Logged In", () => {
   });
 });
 
-describe("CartPage Component - User NOT is Logged In with no token", () => {
+describe("CartPage Component - User is NOT Logged In", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
     useAuth.mockReturnValue([
       {
         user: null,
@@ -414,6 +421,10 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("empty cart page should render", async () => {
@@ -483,9 +494,9 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
   });
 
   it("should be able remove items", async () => {
-    let cartState = [...cartDetails];
-    const setCartMock = jest.fn((newCart) => (cartState = newCart));
-    useCart.mockReturnValue([cartState, setCartMock]);
+    let cart = [...cartDetails];
+    const setCartMock = jest.fn((newCart) => (cart = newCart));
+    useCart.mockReturnValue([cart, setCartMock]);
 
     const { getAllByText, rerender } = render(
       <MemoryRouter initialEntries={["/cart"]}>
@@ -505,7 +516,7 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
       fireEvent.click(getAllByText("Remove")[0]);
     });
 
-    useCart.mockReturnValue([cartState, setCartMock]);
+    useCart.mockReturnValue([cart, setCartMock]);
     rerender(
       <MemoryRouter initialEntries={["/cart"]}>
         <Routes>
@@ -517,6 +528,8 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
     await waitFor(() => {
       expect(getAllByText("Remove").length).toBe(2);
     });
+
+    expect(cart).toStrictEqual(cartDetails.slice(1));
   });
 
   it("should navigate to login page when 'Plase Login to checkout' button is clicked", async () => {
@@ -543,11 +556,11 @@ describe("CartPage Component - User NOT is Logged In with no token", () => {
   });
 
   it("error should be caught while removing items", async () => {
-    let cartState = [...cartDetails];
+    let cart = [...cartDetails];
     const setCartMock = jest.fn().mockImplementation(() => {
       throw new Error("Cart Error");
     });
-    useCart.mockReturnValue([cartState, setCartMock]);
+    useCart.mockReturnValue([cart, setCartMock]);
 
     const { getAllByText } = render(
       <MemoryRouter initialEntries={["/cart"]}>
