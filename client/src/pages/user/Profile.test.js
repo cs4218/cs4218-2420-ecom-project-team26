@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import axios from "axios";
@@ -25,6 +26,14 @@ jest.mock(
       )
 );
 
+jest.mock("../../components/UserMenu", () => () => (
+  <div>
+    <div>Dashboard</div>
+    <div>Profile</div>
+    <div>Orders</div>
+  </div>
+));
+
 jest.mock("../../context/auth", () => ({
   useAuth: jest.fn(() => [null, jest.fn()]),
 }));
@@ -32,7 +41,7 @@ jest.mock("../../context/auth", () => ({
 describe("Profile Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(console, "log").mockImplementation(() => {});
     useAuth.mockReturnValue([
       {
         user: {
@@ -68,6 +77,10 @@ describe("Profile Component", () => {
     });
   });
 
+  afterAll(() => {
+    global.console.log.mockRestore();
+  });
+
   it("renders the profile page with user details except password", async () => {
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
@@ -76,6 +89,10 @@ describe("Profile Component", () => {
         </Routes>
       </MemoryRouter>
     );
+
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
 
     expect(getByText("USER PROFILE")).toBeInTheDocument();
     expect(getByText("UPDATE")).toBeInTheDocument();
@@ -98,7 +115,7 @@ describe("Profile Component", () => {
     expect(getByPlaceholderText("Enter Your Address").value).toBe("123 Street");
   });
 
-  it("should allow inputs for name, password, phone and address", async () => {
+  it("should update inputs for name, password, email, phone and address", async () => {
     const { getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
         <Routes>
@@ -161,17 +178,18 @@ describe("Profile Component", () => {
   });
 
   it("should update user details successfully", async () => {
+    const updatedUser = {
+      address: "456 Street",
+      email: "test2@example.com",
+      name: "Admin 2",
+      phone: "91234567",
+      role: 0,
+      _id: "1",
+    };
     axios.put.mockResolvedValueOnce({
       data: {
         success: true,
-        updatedUser: {
-          address: "456 Street",
-          email: "test2@example.com",
-          name: "Admin 2",
-          phone: "91234567",
-          role: 0,
-          _id: "1",
-        },
+        updatedUser: updatedUser,
       },
     });
 
@@ -206,6 +224,15 @@ describe("Profile Component", () => {
         phone: "91234567",
         address: "456 Street",
       })
+    );
+    const [auth, setAuth] = useAuth();
+    expect(setAuth).toHaveBeenCalledWith({ ...auth, user: updatedUser });
+    expect(localStorage.getItem).toHaveBeenCalledWith("auth");
+    const ls = JSON.parse(localStorage.getItem("auth"));
+    ls.user = updatedUser;
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "auth",
+      JSON.stringify(ls)
     );
     expect(toast.success).toHaveBeenCalledWith("Profile Updated Successfully");
   });
@@ -289,5 +316,49 @@ describe("Profile Component", () => {
       })
     );
     expect(toast.error).toHaveBeenCalledWith("Backend Error Message");
+  });
+
+  it("should show backend error message if password is too short", async () => {
+    axios.put.mockResolvedValueOnce({
+      data: {
+        error: "Passsword is required and 6 character long",
+      },
+    });
+
+    const { getByText, getByPlaceholderText } = render(
+      <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+        <Routes>
+          <Route path="/dashboard/user/profile" element={<Profile />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.change(getByPlaceholderText("Enter Your Name"), {
+      target: { value: "Admin 2" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "123!" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Phone"), {
+      target: { value: "91234567" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Address"), {
+      target: { value: "456 Street" },
+    });
+
+    fireEvent.click(getByText("UPDATE"));
+
+    await waitFor(() =>
+      expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", {
+        name: "Admin 2",
+        email: "test@example.com",
+        password: "123!",
+        phone: "91234567",
+        address: "456 Street",
+      })
+    );
+    expect(toast.error).toHaveBeenCalledWith(
+      "Passsword is required and 6 character long"
+    );
   });
 });
