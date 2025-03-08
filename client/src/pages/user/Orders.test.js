@@ -1,9 +1,9 @@
+/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import axios from "axios";
 import moment from "moment";
 import React from "react";
-import toast from "react-hot-toast";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import Orders from "./Orders";
@@ -25,6 +25,14 @@ jest.mock(
         </div>
       )
 );
+
+jest.mock("../../components/UserMenu", () => () => (
+  <div>
+    <div>Dashboard</div>
+    <div>Profile</div>
+    <div>Orders</div>
+  </div>
+));
 
 jest.mock("../../context/auth", () => ({
   useAuth: jest.fn(),
@@ -96,13 +104,20 @@ describe("Orders Component", () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
+
     expect(getByText("All Orders")).toBeInTheDocument();
+
     expect(queryByText("#")).not.toBeInTheDocument();
     expect(queryByText("Status")).not.toBeInTheDocument();
     expect(queryByText("Buyer")).not.toBeInTheDocument();
     expect(queryByText("date")).not.toBeInTheDocument();
     expect(queryByText("Payment")).not.toBeInTheDocument();
     expect(queryByText("Quantity")).not.toBeInTheDocument();
+    expect(queryByText("1")).not.toBeInTheDocument();
+    expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/orders");
   });
 
   it("renders the orders page with 1 successful order", async () => {
@@ -144,13 +159,19 @@ describe("Orders Component", () => {
       ],
     });
 
-    const { getByText, getAllByText } = render(
+    const { queryByText, getByText, getAllByText, getByAltText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/orders"]}>
         <Routes>
           <Route path="/dashboard/user/orders" element={<Orders />} />
         </Routes>
       </MemoryRouter>
     );
+
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
+
+    expect(getByText("All Orders")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledTimes(1);
@@ -175,7 +196,16 @@ describe("Orders Component", () => {
     expect(getByText("A bestselling novel")).toBeInTheDocument();
     expect(getByText("Price : 14.99")).toBeInTheDocument();
 
+    const novelImage = getByAltText("Novel");
+    expect(novelImage).toBeInTheDocument();
+    expect(novelImage).toHaveAttribute(
+      "src",
+      "/api/v1/product/product-photo/1"
+    );
+
     expect(moment).toHaveBeenCalledWith("2025-02-09T13:53:54.339Z");
+
+    expect(queryByText("2")).not.toBeInTheDocument();
   });
 
   it("renders the orders page with 1 failed order", async () => {
@@ -217,13 +247,19 @@ describe("Orders Component", () => {
       ],
     });
 
-    const { getByText, getAllByText } = render(
+    const { queryByText, getByText, getAllByText, getByAltText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/orders"]}>
         <Routes>
           <Route path="/dashboard/user/orders" element={<Orders />} />
         </Routes>
       </MemoryRouter>
     );
+
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
+
+    expect(getByText("All Orders")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledTimes(1);
@@ -248,7 +284,16 @@ describe("Orders Component", () => {
     expect(getByText("A bestselling novel")).toBeInTheDocument();
     expect(getByText("Price : 14.99")).toBeInTheDocument();
 
+    const novelImage = getByAltText("Novel");
+    expect(novelImage).toBeInTheDocument();
+    expect(novelImage).toHaveAttribute(
+      "src",
+      "/api/v1/product/product-photo/1"
+    );
+
     expect(moment).toHaveBeenCalledWith("2025-02-09T13:53:54.339Z");
+
+    expect(queryByText("2")).not.toBeInTheDocument();
   });
 
   it("renders the orders page with 1 failed and 1 success order", async () => {
@@ -308,13 +353,19 @@ describe("Orders Component", () => {
       ],
     });
 
-    const { getByText, getAllByText } = render(
+    const { queryByText, getByText, getAllByText, getByAltText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/orders"]}>
         <Routes>
           <Route path="/dashboard/user/orders" element={<Orders />} />
         </Routes>
       </MemoryRouter>
     );
+
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
+
+    expect(getByText("All Orders")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledTimes(1);
@@ -341,13 +392,26 @@ describe("Orders Component", () => {
     expect(getByText("A bestselling novel")).toBeInTheDocument();
     expect(getByText("Price : 14.99")).toBeInTheDocument();
 
+    const novelImage = getByAltText("Novel");
+    expect(novelImage).toBeInTheDocument();
+    expect(novelImage).toHaveAttribute(
+      "src",
+      "/api/v1/product/product-photo/1"
+    );
+
     expect(getByText("2")).toBeInTheDocument();
     expect(getByText("Success")).toBeInTheDocument();
     expect(getByText("The Law of Contract in Singapore")).toBeInTheDocument();
     expect(getByText("A bestselling book in Singapor")).toBeInTheDocument();
     expect(getByText("Price : 54.99")).toBeInTheDocument();
 
+    const bookImage = getByAltText("The Law of Contract in Singapore");
+    expect(bookImage).toBeInTheDocument();
+    expect(bookImage).toHaveAttribute("src", "/api/v1/product/product-photo/2");
+
     expect(moment).toHaveBeenCalledWith("2025-02-09T13:53:54.339Z");
+
+    expect(queryByText("3")).not.toBeInTheDocument();
   });
 
   it("renders the orders page with 1 success order with 2 products", async () => {
@@ -395,13 +459,19 @@ describe("Orders Component", () => {
       ],
     });
 
-    const { getByText } = render(
+    const { getByText, getByAltText } = render(
       <MemoryRouter initialEntries={["/dashboard/user/orders"]}>
         <Routes>
           <Route path="/dashboard/user/orders" element={<Orders />} />
         </Routes>
       </MemoryRouter>
     );
+
+    expect(getByText("Dashboard")).toBeInTheDocument();
+    expect(getByText("Profile")).toBeInTheDocument();
+    expect(getByText("Orders")).toBeInTheDocument();
+
+    expect(getByText("All Orders")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledTimes(1);
@@ -428,9 +498,23 @@ describe("Orders Component", () => {
     expect(getByText("A bestselling novel")).toBeInTheDocument();
     expect(getByText("Price : 14.99")).toBeInTheDocument();
 
+    const novelImage = getByAltText("Novel");
+    expect(novelImage).toBeInTheDocument();
+    expect(novelImage).toHaveAttribute(
+      "src",
+      "/api/v1/product/product-photo/1"
+    );
+
     expect(getByText("Shirt")).toBeInTheDocument();
     expect(getByText("A nice shirt")).toBeInTheDocument();
     expect(getByText("Price : 24.99")).toBeInTheDocument();
+
+    const shirtImage = getByAltText("Shirt");
+    expect(shirtImage).toBeInTheDocument();
+    expect(shirtImage).toHaveAttribute(
+      "src",
+      "/api/v1/product/product-photo/2"
+    );
 
     expect(moment).toHaveBeenCalledWith("2025-02-09T13:53:54.339Z");
   });
