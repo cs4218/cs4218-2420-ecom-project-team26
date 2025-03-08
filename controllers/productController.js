@@ -281,7 +281,7 @@ const searchProductController = async (req, res) => {
 };
 
 // similar products
-const realtedProductController = async (req, res) => {
+const relatedProductController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
     const products = await productModel
@@ -387,7 +387,7 @@ module.exports = {
   productCountController,
   productListController,
   searchProductController,
-  realtedProductController,
+  relatedProductController,
   productCategoryController,
   braintreeTokenController,
   brainTreePaymentController,
