@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import axios from "axios";
@@ -9,6 +10,22 @@ import Register from "./Register";
 // Mocking axios.post
 jest.mock("axios");
 jest.mock("react-hot-toast");
+
+jest.mock("../../styles/AuthStyles.css", () => {});
+jest.mock(
+  "../../components/Layout",
+  () =>
+    ({ children, title, description, keywords, author }) =>
+      (
+        <div>
+          <meta name="description" content={description} />
+          <meta name="keywords" content={keywords} />
+          <meta name="author" content={author} />
+          <title>{title}</title>
+          <main>{children}</main>
+        </div>
+      )
+);
 
 jest.mock("../../context/auth", () => ({
   useAuth: jest.fn(() => [null, jest.fn()]), // Mock useAuth hook to return null state and a mock function for setAuth
@@ -46,7 +63,12 @@ jest.mock("../../hooks/useCategory", () => jest.fn(() => []));
 
 describe("Register Component", () => {
   beforeEach(() => {
+    jest.spyOn(console, "log").mockImplementation(() => {});
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("should register the user successfully", async () => {
