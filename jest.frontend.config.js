@@ -21,6 +21,8 @@ module.exports = {
 
   // only run these tests
   testMatch: [
+    "<rootDir>/client/src/components/Routes/*.test.js",
+    "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/pages/Auth/*.test.js",
     "<rootDir>/client/src/pages/user/*.test.js",
     "<rootDir>/client/src/context/*.test.js",
