@@ -308,24 +308,56 @@ const relatedProductController = async (req, res) => {
   }
 };
 
-// get prdocyst by catgory
+// OLD: get prdocyst by catgory
+// const productCategoryController = async (req, res) => {
+//   try {
+//     const category = await categoryModel.findOne({ slug: req.params.slug });
+//     const products = await productModel
+//       .find({ category: category._id })
+//       .populate("category");
+//     res.status(200).send({
+//       success: true,
+//       category,
+//       products,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).send({
+//       success: false,
+//       error,
+//       message: "Error While Getting products",
+//     });
+//   }
+// };
+
+// NEW: Do one query instead of two
 const productCategoryController = async (req, res) => {
   try {
-    const category = await categoryModel.findOne({ slug: req.params.slug });
-    const products = await productModel
-      .find({ category: category._id })
-      .populate("category");
+    const products = await productModel.find().populate({
+      path: "category",
+      match: { slug: req.params.slug },
+    });
+
+    const filteredProducts = products.filter((product) => product.category);
+
+    if (filteredProducts.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No products found for this category",
+      });
+    }
+
     res.status(200).send({
       success: true,
-      category,
-      products,
+      products: filteredProducts,
+      category: filteredProducts[0].category,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(400).send({
       success: false,
       error,
-      message: "Error While Getting products",
+      message: "Error while getting products",
     });
   }
 };
