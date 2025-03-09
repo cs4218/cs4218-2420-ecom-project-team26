@@ -4,6 +4,13 @@ import Contact from "./Contact";
 import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
+// Mock the React icons
+jest.mock("react-icons/bi", () => ({
+  BiMailSend: () => <span data-testid="mail-icon">📧</span>,
+  BiPhoneCall: () => <span data-testid="phone-icon">📞</span>,
+  BiSupport: () => <span data-testid="support-icon">🔧</span>,
+}));
+
 jest.mock(
   "../components/Layout",
   () =>
