@@ -16,7 +16,7 @@ module.exports = {
     "\\.(css|scss)$": "identity-obj-proxy",
   },
 
-  // ignore all node_modules except styleMock (needed for css imports)
+  // ignore all node_modules except styleMock (needed for css imports)s
   transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js)$)"],
 
   // only run these tests
@@ -28,6 +28,9 @@ module.exports = {
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/pages/*.test.js",
     "<rootDir>/client/src/hooks/*.test.js",
+    "<rootDir>/client/src/pages/admin/*.test.js",
+    "<rootDir>/client/src/components/*.test.js",
+    "<rootDir>/client/src/components/Form/*.test.js",
   ],
 
   // jest code coverage
@@ -38,6 +41,8 @@ module.exports = {
     "client/src/context/**",
     "client/src/pages/**",
     "client/src/hooks/**",
+    "client/src/components/AdminMenu.js",
+    "client/src/components/Form/CategoryForm.js",
   ],
   coverageThreshold: {
     global: {
