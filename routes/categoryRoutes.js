@@ -2,7 +2,7 @@ const express = require("express");
 const {
   categoryController,
   createCategoryController,
-  deleteCategoryCOntroller,
+  deleteCategoryController,
   singleCategoryController,
   updateCategoryController,
 } = require("../controllers/categoryController.js");
@@ -39,7 +39,7 @@ router.delete(
   "/delete-category/:id",
   requireSignIn,
   isAdmin,
-  deleteCategoryCOntroller
+  deleteCategoryController
 );
 
 module.exports = router;

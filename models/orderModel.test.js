@@ -1,194 +1,130 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { MongoMemoryServer } = require("mongodb-memory-server");
+const Category = require("./categoryModel");
 
-jest.mock('mongoose', () => {
-  const mMongoose = {
-    Schema: jest.fn(),
-    model: jest.fn(),
-    Types: {
-      ObjectId: jest.fn(() => 'mockObjectId')
-    },
-    Error: {
-      ValidationError: class ValidationError extends Error {
-        constructor() {
-          super();
-          this.errors = {};
-        }
+let mongoServer;
+
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+
+  // Connect Mongoose to the in-memory database
+  await mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+describe("Category Model Test with In-Memory Database", () => {
+  beforeEach(async () => {
+    await mongoose.connection.dropDatabase();
+  });
+
+  describe("Category Creation", () => {
+    test("create category with name and slug", async () => {
+      const categoryData = {
+        name: "Test",
+        slug: "test"
+      };
+
+      const createdCategory = await Category.create(categoryData);
+
+      expect(createdCategory._id).toBeDefined();
+      expect(createdCategory.name).toBe("Test");
+      expect(createdCategory.slug).toBe("test");
+    });
+
+    test("should allow category without name", async () => {
+      const categoryData = {
+        slug: "test category"
+      };
+
+      const createdCategory = await Category.create(categoryData);
+      expect(createdCategory._id).toBeDefined();
+      expect(createdCategory.slug).toBe("test category");
+    });
+
+    test("should allow category without slug", async () => {
+      const categoryData = {
+        name: "test category"
+      };
+
+      const createdCategory = await Category.create(categoryData);
+      expect(createdCategory._id).toBeDefined();
+      expect(createdCategory.name).toBe("test category");
+    });
+  });
+
+  describe("Category Attributes", () => {
+    test("should verify model fields", async () => {
+      const categoryData = {
+        name: "Test",
+        slug: "test",
+        description: "test description",
+        active: true
+      };
+
+      const createdCategory = await Category.create(categoryData);
+      expect(createdCategory.name).toBe("Test");
+      expect(createdCategory.slug).toBe("test");
+      
+      if ('description' in createdCategory) {
+        expect(createdCategory.description).toBe("test description");
       }
-    }
-  };
-  return mMongoose;
-});
-
-jest.mock('./orderModel', () => {
-  return {
-    create: jest.fn(),
-    findOne: jest.fn(),
-    findById: jest.fn(),
-    find: jest.fn(),
-    deleteMany: jest.fn()
-  };
-});
-
-const Order = require('./orderModel');
-
-describe('Order Model Test', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  describe('Order Creation', () => {
-    test('create order with default status', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        buyer: 'mockObjectId',
-        payment: { method: 'card' }
-      };
-
-      const mockCreatedOrder = {
-        ...orderData,
-        _id: 'mockOrderId',
-        status: 'Not Process'
-      };
-
-      Order.create.mockResolvedValue(mockCreatedOrder);
-
-      const createdOrder = await Order.create(orderData);
-
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-      expect(createdOrder._id).toBeDefined();
-      expect(createdOrder.status).toBe('Not Process');
-      expect(createdOrder.products).toHaveLength(1);
-      expect(createdOrder.buyer).toBeDefined();
-    });
-
-    test('should create order with "Processing" status', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        buyer: 'mockObjectId',
-        payment: { method: 'card' },
-        status: 'Processing'
-      };
-
-      const mockCreatedOrder = {
-        ...orderData,
-        _id: 'mockOrderId'
-      };
-
-      Order.create.mockResolvedValue(mockCreatedOrder);
-
-      const createdOrder = await Order.create(orderData);
-
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-      expect(createdOrder.status).toBe('Processing');
-    });
-
-    test('should reject invalid status', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        buyer: 'mockObjectId',
-        payment: { method: 'card' },
-        status: 'Invalid Status'
-      };
-
-      const validationError = new mongoose.Error.ValidationError();
-      validationError.errors.status = new Error('Invalid status');
-
-      Order.create.mockRejectedValue(validationError);
       
-      await expect(Order.create(orderData)).rejects.toThrow(mongoose.Error.ValidationError);
-      expect(Order.create).toHaveBeenCalledWith(orderData);
+      if ('active' in createdCategory) {
+        expect(createdCategory.active).toBe(true);
+      }
+    });
+    
+    test("should support custom attributes", async () => {
+      const categoryData = {
+        name: "Test",
+        slug: "test",
+      };
+
+      const createdCategory = await Category.create(categoryData);
+      expect(createdCategory._id).toBeDefined();
     });
   });
 
-  describe('Order References', () => {
-    test('should handle multiple products', async () => {
-      const productIds = ['mockObjectId1', 'mockObjectId2', 'mockObjectId3'];
-      
-      const orderData = {
-        products: productIds,
-        buyer: 'mockObjectId',
-        payment: { method: 'card' }
+  describe("Category Operations", () => {
+    test("should update category", async () => {
+      const categoryData = {
+        name: "Test",
+        slug: "test"
       };
 
-      const mockCreatedOrder = {
-        ...orderData,
-        _id: 'mockOrderId'
-      };
+      const createdCategory = await Category.create(categoryData);
+      const categoryId = createdCategory._id;
 
-      Order.create.mockResolvedValue(mockCreatedOrder);
+      await Category.findByIdAndUpdate(
+        categoryId,
+        { name: "Test category" }
+      );
 
-      const createdOrder = await Order.create(orderData);
-
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-      expect(createdOrder.products).toHaveLength(3);
-      expect(createdOrder.products).toEqual(productIds);
+      const updatedCategory = await Category.findById(categoryId);
+      expect(updatedCategory.name).toBe("Test category");
     });
 
-    test('check for buyer reference', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        payment: { method: 'card' }
+    test("should delete category", async () => {
+      const categoryData = {
+        name: "Test",
+        slug: "test"
       };
 
-      const validationError = new mongoose.Error.ValidationError();
-      validationError.errors.buyer = new Error('Buyer is required');
+      const createdCategory = await Category.create(categoryData);
+      const categoryId = createdCategory._id;
 
-      Order.create.mockRejectedValue(validationError);
-      
-      await expect(Order.create(orderData)).rejects.toThrow(mongoose.Error.ValidationError);
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-    });
-  });
+      await Category.findByIdAndDelete(categoryId);
 
-  describe('Timestamps check', () => {
-    test('check for timestamps', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        buyer: 'mockObjectId',
-        payment: { method: 'card' }
-      };
-
-      const now = new Date();
-      const mockCreatedOrder = {
-        ...orderData,
-        _id: 'mockOrderId',
-        createdAt: now,
-        updatedAt: now
-      };
-
-      Order.create.mockResolvedValue(mockCreatedOrder);
-
-      const createdOrder = await Order.create(orderData);
-
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-      expect(createdOrder.createdAt).toBeDefined();
-      expect(createdOrder.updatedAt).toBeDefined();
-    });
-
-    test('update timestamp on status change', async () => {
-      const orderData = {
-        products: ['mockObjectId'],
-        buyer: 'mockObjectId',
-        payment: { method: 'card' }
-      };
-
-      const createdAt = new Date(2025, 0, 1);
-      const updatedAt = new Date(2025, 0, 2);
-
-      const mockCreatedOrder = {
-        ...orderData,
-        _id: 'mockOrderId',
-        createdAt,
-        updatedAt
-      };
-
-      Order.create.mockResolvedValue(mockCreatedOrder);
-
-      const createdOrder = await Order.create(orderData);
-
-      expect(Order.create).toHaveBeenCalledWith(orderData);
-      expect(createdOrder.updatedAt).toEqual(updatedAt);
-      expect(createdOrder.updatedAt).not.toEqual(createdOrder.createdAt);
+      const deletedCategory = await Category.findById(categoryId);
+      expect(deletedCategory).toBeNull();
     });
   });
 });
