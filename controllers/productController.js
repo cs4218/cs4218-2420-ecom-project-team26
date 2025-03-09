@@ -42,6 +42,7 @@ const createProductController = async (req, res) => {
 
     const products = new productModel({ ...req.fields, slug: slugify(name) });
     if (photo) {
+      products.photo = products.photo || {};
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
@@ -56,7 +57,7 @@ const createProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error in crearing product",
+      message: "Error in creating product",
     });
   }
 };
@@ -128,7 +129,7 @@ const productPhotoController = async (req, res) => {
 //delete controller
 const deleteProductController = async (req, res) => {
   try {
-    await productModel.findByIdAndDelete(req.params.pid).select("-photo");
+    await productModel.findByIdAndDelete(req.params.pid);
     res.status(200).send({
       success: true,
       message: "Product Deleted successfully",
@@ -173,6 +174,7 @@ const updateProductController = async (req, res) => {
       { new: true }
     );
     if (photo) {
+      products.photo = products.photo || {};
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
@@ -217,7 +219,7 @@ const productFiltersController = async (req, res) => {
 // product count
 const productCountController = async (req, res) => {
   try {
-    const total = await productModel.find({}).estimatedDocumentCount();
+    const total = await productModel.estimatedDocumentCount();
     res.status(200).send({
       success: true,
       total,
@@ -281,7 +283,7 @@ const searchProductController = async (req, res) => {
 };
 
 // similar products
-const realtedProductController = async (req, res) => {
+const relatedProductController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
     const products = await productModel
@@ -306,22 +308,56 @@ const realtedProductController = async (req, res) => {
   }
 };
 
-// get prdocyst by catgory
+// OLD: get prdocyst by catgory
+// const productCategoryController = async (req, res) => {
+//   try {
+//     const category = await categoryModel.findOne({ slug: req.params.slug });
+//     const products = await productModel
+//       .find({ category: category._id })
+//       .populate("category");
+//     res.status(200).send({
+//       success: true,
+//       category,
+//       products,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).send({
+//       success: false,
+//       error,
+//       message: "Error While Getting products",
+//     });
+//   }
+// };
+
+// NEW: Do one query instead of two
 const productCategoryController = async (req, res) => {
   try {
-    const category = await categoryModel.findOne({ slug: req.params.slug });
-    const products = await productModel.find({ category }).populate("category");
+    const products = await productModel.find().populate({
+      path: "category",
+      match: { slug: req.params.slug },
+    });
+
+    const filteredProducts = products.filter((product) => product.category);
+
+    if (filteredProducts.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No products found for this category",
+      });
+    }
+
     res.status(200).send({
       success: true,
-      category,
-      products,
+      products: filteredProducts,
+      category: filteredProducts[0].category,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(400).send({
       success: false,
       error,
-      message: "Error While Getting products",
+      message: "Error while getting products",
     });
   }
 };
@@ -387,7 +423,7 @@ module.exports = {
   productCountController,
   productListController,
   searchProductController,
-  realtedProductController,
+  relatedProductController,
   productCategoryController,
   braintreeTokenController,
   brainTreePaymentController,
