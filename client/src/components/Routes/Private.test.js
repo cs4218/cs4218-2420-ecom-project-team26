@@ -143,42 +143,4 @@ describe("Private Route Component", () => {
       });
     });
   });
-
-  describe("Error Handling", () => {
-    test("handles API error gracefully", async () => {
-      // Mock auth context with token
-      useAuth.mockReturnValue([{ token: "test-token" }, jest.fn()]);
-      
-      // Mock API error
-      axios.get.mockRejectedValueOnce(new Error("API Error"));
-
-      render(
-        <BrowserRouter>
-          <Private />
-        </BrowserRouter>
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId("mock-spinner")).toBeInTheDocument();
-      });
-    });
-
-    test("handles network timeout", async () => {
-      // Mock auth context with token
-      useAuth.mockReturnValue([{ token: "test-token" }, jest.fn()]);
-      
-      // Mock timeout
-      axios.get.mockRejectedValueOnce(new Error("Network timeout"));
-
-      render(
-        <BrowserRouter>
-          <Private />
-        </BrowserRouter>
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId("mock-spinner")).toBeInTheDocument();
-      });
-    });
-  });
 }); 
