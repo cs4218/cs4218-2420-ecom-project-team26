@@ -129,7 +129,7 @@ const productPhotoController = async (req, res) => {
 //delete controller
 const deleteProductController = async (req, res) => {
   try {
-    await productModel.findByIdAndDelete(req.params.pid).select("-photo");
+    await productModel.findByIdAndDelete(req.params.pid);
     res.status(200).send({
       success: true,
       message: "Product Deleted successfully",
@@ -174,6 +174,7 @@ const updateProductController = async (req, res) => {
       { new: true }
     );
     if (photo) {
+      products.photo = products.photo || {};
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
@@ -218,7 +219,7 @@ const productFiltersController = async (req, res) => {
 // product count
 const productCountController = async (req, res) => {
   try {
-    const total = await productModel.find({}).estimatedDocumentCount();
+    const total = await productModel.estimatedDocumentCount();
     res.status(200).send({
       success: true,
       total,
@@ -311,7 +312,9 @@ const relatedProductController = async (req, res) => {
 const productCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });
-    const products = await productModel.find({ category }).populate("category");
+    const products = await productModel
+      .find({ category: category._id })
+      .populate("category");
     res.status(200).send({
       success: true,
       category,
