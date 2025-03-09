@@ -6,7 +6,11 @@ jest.mock("bcrypt");
 describe("hashPassword helper component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("should hash password successfully", async () => {
@@ -20,7 +24,7 @@ describe("hashPassword helper component", () => {
     expect(result).toBe(hashedPassword);
   });
 
-  it("should handle error during hashing", async () => {
+  it("should catch error during hashing if unsucessful", async () => {
     const password = "password123";
     bcrypt.hash.mockRejectedValue(new Error("Hash Error"));
 
@@ -34,7 +38,11 @@ describe("hashPassword helper component", () => {
 describe("comparePassword helper component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("should return true if passwords match", async () => {

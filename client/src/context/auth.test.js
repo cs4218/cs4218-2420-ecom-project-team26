@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
 import { render, waitFor } from "@testing-library/react";
 import axios from "axios";
