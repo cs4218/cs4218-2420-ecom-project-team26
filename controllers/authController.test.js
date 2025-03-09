@@ -24,6 +24,7 @@ describe("Register Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
     req = {
       body: {
         name: "John Doe",
@@ -39,6 +40,10 @@ describe("Register Controller Test", () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("user model is not saved for missing name", async () => {
@@ -172,6 +177,9 @@ describe("Register Controller Test", () => {
     expect(hashPassword).toHaveBeenCalledWith("password123");
     expect(userModel.prototype.save).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
+    expect(console.log).toHaveBeenCalledWith(
+      new Error("Error saving user model")
+    );
     expect(res.send).toHaveBeenCalledWith({
       success: false,
       message: "Errro in Registeration",
@@ -185,7 +193,8 @@ describe("Login Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+
     req = {
       body: {
         email: "john@example.com",
@@ -197,6 +206,10 @@ describe("Login Controller Test", () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("login fails when email is missing", async () => {
@@ -318,7 +331,8 @@ describe("Forgot Password Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+
     req = {
       body: {
         email: "john@example.com",
@@ -331,6 +345,10 @@ describe("Forgot Password Controller Test", () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("forgot password fails when email is missing", async () => {
@@ -472,7 +490,8 @@ describe("Test Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+
     req = {
       body: {},
     };
@@ -480,6 +499,10 @@ describe("Test Controller Test", () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("should send protected routes", async () => {
@@ -514,7 +537,8 @@ describe("Update Profile Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+
     req = {
       user: mockUser,
       body: {
@@ -531,6 +555,10 @@ describe("Update Profile Controller Test", () => {
       send: jest.fn(),
       json: jest.fn().mockReturnThis(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("update profile fails when user id does not exists", async () => {
@@ -697,7 +725,8 @@ describe("Get Orders Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+
     req = {
       user: mockUser,
       body: {
@@ -714,6 +743,10 @@ describe("Get Orders Controller Test", () => {
       send: jest.fn(),
       json: jest.fn().mockReturnThis(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("get orders fail when populate fails", async () => {
@@ -769,13 +802,17 @@ describe("Get All Orders Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
 
     res = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
       json: jest.fn().mockReturnThis(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("get all orders fail when sort fails", async () => {
@@ -843,7 +880,7 @@ describe("Get Order Status Controller Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
 
     req = {
       user: mockUser,
@@ -858,6 +895,10 @@ describe("Get Order Status Controller Test", () => {
       send: jest.fn(),
       json: jest.fn().mockReturnThis(),
     };
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   test("update order status fails when findByIdAndUpdate fails", async () => {

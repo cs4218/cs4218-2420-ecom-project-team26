@@ -10,10 +10,14 @@ describe("requireSignIn middleware component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
     req = { headers: { authorization: "" } };
     res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
     next = jest.fn();
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("should call next if valid token", async () => {
@@ -93,13 +97,17 @@ describe("isAdmin middleware component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(global.console, "log");
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
     req = {
       headers: { authorization: "Bearer 123456789" },
       user: {},
     };
     res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
     next = jest.fn();
+  });
+
+  afterAll(() => {
+    global.console.log.mockRestore();
   });
 
   it("should call next for admin users", async () => {
