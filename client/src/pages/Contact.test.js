@@ -39,13 +39,9 @@ describe("Contact Component", () => {
         "For any query or info about product, feel free to call anytime. We are available 24X7."
       )
     ).toBeInTheDocument();
-
-    // Since the icons and text are separate elements, use text with a regex or partial match
     expect(getByText(/www\.help@ecommerceapp\.com/)).toBeInTheDocument();
     expect(getByText(/012-3456789/)).toBeInTheDocument();
     expect(getByText(/1800-0000-0000 \(toll free\)/)).toBeInTheDocument();
-
-    // Verifying the image alt text
     expect(getByAltText("contactus")).toBeInTheDocument();
   });
 });
