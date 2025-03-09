@@ -50,5 +50,5 @@ test("renders AdminDashboard component", () => {
   // Check if the admin details are rendered correctly
   expect(screen.getByText("Admin Name : Admin User")).toBeInTheDocument();
   expect(screen.getByText("Admin Email : admin@example.com")).toBeInTheDocument();
-  expect(screen.getByText("Admin Contact : 123-456-7890")).toBeInTheDocument();
+  expect(screen.getByText("Admin Contact : 1234-5678")).toBeInTheDocument();
 });
