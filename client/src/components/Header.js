@@ -11,7 +11,8 @@ const Header = () => {
   const [auth, setAuth] = useAuth();
   const [cart] = useCart();
   const categories = useCategory();
-  const handleLogout = () => {
+  const handleLogout = async (e) => {
+    e.preventDefault();
     setAuth({
       ...auth,
       user: null,
@@ -55,13 +56,13 @@ const Header = () => {
                   Categories
                 </Link>
                 <ul className="dropdown-menu">
-                  <li>
+                  <li key={"all"}>
                     <Link className="dropdown-item" to={"/categories"}>
                       All Categories
                     </Link>
                   </li>
-                  {categories?.map((c) => (
-                    <li>
+                  {categories?.map((c, index) => (
+                    <li key={c.slug || index}>
                       <Link
                         className="dropdown-item"
                         to={`/category/${c.slug}`}
