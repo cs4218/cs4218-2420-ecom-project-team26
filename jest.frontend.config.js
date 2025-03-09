@@ -21,10 +21,13 @@ module.exports = {
 
   // only run these tests
   testMatch: [
+    "<rootDir>/client/src/components/Routes/*.test.js",
+    "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/pages/Auth/*.test.js",
     "<rootDir>/client/src/pages/user/*.test.js",
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/pages/*.test.js",
+    "<rootDir>/client/src/hooks/*.test.js",
     "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/components/*.test.js",
     "<rootDir>/client/src/components/Form/*.test.js",
@@ -37,6 +40,7 @@ module.exports = {
     "client/src/pages/user/**",
     "client/src/context/**",
     "client/src/pages/**",
+    "client/src/hooks/**",
     "client/src/components/AdminMenu.js",
     "client/src/components/Form/CategoryForm.js",
   ],

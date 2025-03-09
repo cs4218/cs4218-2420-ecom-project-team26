@@ -1,9 +1,8 @@
-/** @jest-environment jsdom */
 import "@testing-library/jest-dom/extend-expect";
 import { render } from "@testing-library/react";
+import Contact from "./Contact";
 import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import About from "./About";
 
 jest.mock(
   "../components/Layout",
@@ -20,22 +19,29 @@ jest.mock(
       )
 );
 
-describe("About Component", () => {
+describe("Contact Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders the about page", async () => {
+  it("renders contact page with correct content", async () => {
     const { getByAltText, getByText } = render(
-      <MemoryRouter initialEntries={["/about"]}>
+      <MemoryRouter initialEntries={["/contact"]}>
         <Routes>
-          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </MemoryRouter>
     );
-    const image = getByAltText("contactus");
-    expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute("src", "/images/about.jpeg");
-    expect(getByText("Add text")).toBeInTheDocument();
+
+    expect(getByText("CONTACT US")).toBeInTheDocument();
+    expect(
+      getByText(
+        "For any query or info about product, feel free to call anytime. We are available 24X7."
+      )
+    ).toBeInTheDocument();
+    expect(getByText(/www\.help@ecommerceapp\.com/)).toBeInTheDocument();
+    expect(getByText(/012-3456789/)).toBeInTheDocument();
+    expect(getByText(/1800-0000-0000 \(toll free\)/)).toBeInTheDocument();
+    expect(getByAltText("contactus")).toBeInTheDocument();
   });
 });
