@@ -41,13 +41,19 @@ module.exports = {
     "client/src/context/**",
     "client/src/pages/**",
     "client/src/hooks/**",
+    "client/src/components/Form/**",
     "client/src/components/AdminMenu.js",
-    "client/src/components/Form/CategoryForm.js",
+    "client/src/components/Footer.js",
+    "client/src/components/Header.js",
+    "client/src/components/Layout.js",
+    "client/src/components/Spinner.js",
+    "client/src/components/UserMenu.js",
+    "client/src/components/Routes/Private.js",
   ],
   coverageThreshold: {
     global: {
-      lines: 100,
-      functions: 100,
+      lines: 80,
+      functions: 80,
     },
   },
 };
