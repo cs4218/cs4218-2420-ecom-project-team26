@@ -391,11 +391,30 @@ describe("ProductDetails component", () => {
                   }
                 }
           }).mockResolvedValueOnce({
-              data: {
-                success: true,
-                products: []
-              }
-          });
+            data: {
+              success: true,
+              products: [
+                  {
+                      _id: "67a2171ea6d9e00ef2ac0229",
+                      name: "The Law of Contract in Singapore",
+                      slug: "the-law-of-contract-in-singapore",
+                      description: "A bestselling book in Singapore",
+                      price: 54.99,
+                      category: {
+                          _id: "66db427fdb0119d9234b27ef",
+                          name: "Book",
+                          slug: "book",
+                          __v: 0
+                      },
+                      quantity: 200,
+                      shipping: true,
+                      createdAt: "2024-09-06T17:57:19.992Z",
+                      updatedAt: "2024-09-06T17:57:19.992Z",
+                      __v: 0
+                  }
+              ]
+            }
+        });
         render(
         <MemoryRouter initialEntries={["/product/test-value"]}>
             <Routes>
@@ -403,10 +422,10 @@ describe("ProductDetails component", () => {
             </Routes>
         </MemoryRouter>
         );
-        expect(await screen.findByText("Name : Novel")).toBeInTheDocument();
+        expect(await screen.findByText("The Law of Contract in Singapore")).toBeInTheDocument();
 
         const button = await screen.findAllByRole("button");
-        expect(await button).toHaveLength(1);
+        expect(await button).toHaveLength(3);
         expect(await button[0]).toHaveTextContent("ADD TO CART");
         fireEvent.click(button[0]);
 
@@ -447,5 +466,45 @@ describe("ProductDetails component", () => {
             __v: 0
         }]));
         expect(toast.success).toHaveBeenCalledWith("Item Added to cart");
-    })   
+
+        expect(await button[2]).toHaveTextContent("ADD TO CART");
+        fireEvent.click(button[2]);
+        expect(setCart).toHaveBeenCalledWith([{
+            _id: "67a2171ea6d9e00ef2ac0229",
+            name: "The Law of Contract in Singapore",
+            slug: "the-law-of-contract-in-singapore",
+            description: "A bestselling book in Singapore",
+            price: 54.99,
+            category: {
+                _id: "66db427fdb0119d9234b27ef",
+                name: "Book",
+                slug: "book",
+                __v: 0
+            },
+            quantity: 200,
+            shipping: true,
+            createdAt: "2024-09-06T17:57:19.992Z",
+            updatedAt: "2024-09-06T17:57:19.992Z",
+            __v: 0
+        }]);
+        expect(Storage.prototype.setItem).toHaveBeenCalledWith("cart", JSON.stringify([{
+            _id: "67a2171ea6d9e00ef2ac0229",
+            name: "The Law of Contract in Singapore",
+            slug: "the-law-of-contract-in-singapore",
+            description: "A bestselling book in Singapore",
+            price: 54.99,
+            category: {
+                _id: "66db427fdb0119d9234b27ef",
+                name: "Book",
+                slug: "book",
+                __v: 0
+            },
+            quantity: 200,
+            shipping: true,
+            createdAt: "2024-09-06T17:57:19.992Z",
+            updatedAt: "2024-09-06T17:57:19.992Z",
+            __v: 0
+        }]));
+        expect(toast.success).toHaveBeenCalledWith("Item Added to cart");
+    })
 })
