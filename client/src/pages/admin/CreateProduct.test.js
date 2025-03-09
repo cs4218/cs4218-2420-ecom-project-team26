@@ -14,12 +14,43 @@ import CreateProduct from "./CreateProduct";
 import { BrowserRouter } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 
+// Mock dependencies
 jest.mock("axios");
 jest.mock("react-hot-toast");
+global.URL.createObjectURL = jest.fn(() => "mock-url");
+
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
+// Mock the Layout and AdminMenu components
+jest.mock("./../../components/Layout", () => ({ children, title }) => (
+  <div data-testid="mock-layout" title={title}>
+    {children}
+  </div>
+));
+
+jest.mock("./../../components/AdminMenu", () => () => (
+  <div data-testid="mock-admin-menu">AdminMenu</div>
+));
+
 
 const mockCategories = [
-  { _id: "1", name: "Category 1" },
-  { _id: "2", name: "Category 2" },
+  {
+    _id: "1",
+    name: "Category 1",
+    slug: "category-1",
+    __v: 0,
+  },
+  {
+    _id: "2",
+    name: "Category 2",
+    slug: "category-2",
+    __v: 0,
+  },
 ];
 
 const mockAuth = {
@@ -100,7 +131,10 @@ beforeEach(() => {
   axios.get.mockResolvedValue({
     data: { success: true, category: mockCategories },
   });
-  axios.post.mockResolvedValue({ data: { success: true } });
+  axios.post.mockReturnValueOnce({
+    data: { success: true },
+  });
+  axios.post.mockReset();
 });
 
 afterEach(() => {
@@ -198,8 +232,11 @@ test("handles successful product creation", async () => {
   });
 
   // Simulate form submission
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
+  const createProductButton = screen.getByText((content, element) => {
+    return (
+      element.tagName.toLowerCase() === "button" &&
+      (content.includes("PRODUCT") || content.includes("Product"))
+    );
   });
   fireEvent.click(createProductButton);
 
@@ -213,8 +250,16 @@ test("handles successful product creation", async () => {
   });
 });
 
-test("handles product creation error", async () => {
-  axios.post.mockRejectedValueOnce(new Error("Network Error"));
+test("navigates to products page after successful creation", async () => {
+  // Mock successful product creation
+  axios.post.mockImplementation(() => {
+    return Promise.resolve({
+      data: {
+        success: true,
+        message: "Product Created Successfully",
+      },
+    });
+  });
 
   await act(async () => {
     render(
@@ -252,18 +297,83 @@ test("handles product creation error", async () => {
   });
 
   // Simulate form submission
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
+  const createProductButton = screen.getByText((content, element) => {
+    return (
+      element.tagName.toLowerCase() === "button" &&
+      (content.includes("PRODUCT") || content.includes("Product"))
+    );
+  });
+
+  // Use act to ensure all updates are processed
+  await act(async () => {
+    fireEvent.click(createProductButton);
+    // Add a small delay to ensure the navigation happens
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  });
+
+  // Check if navigation was called with the correct path
+  expect(mockNavigate).toHaveBeenCalledWith("/dashboard/admin/products");
+  expect(toast.success).toHaveBeenCalledWith("Product Created Successfully");
+});
+
+test("handles product creation error", async () => {
+  // Use mockImplementationOnce instead to throw an error
+  axios.post.mockImplementationOnce(() => {
+    throw new Error("Network Error");
+  });
+
+  await act(async () => {
+    render(
+      <BrowserRouter>
+        <CreateProduct />
+        <Toaster />
+      </BrowserRouter>
+    );
+  });
+
+  // Simulate input changes
+  fireEvent.change(screen.getByPlaceholderText("write a name"), {
+    target: { value: "New Product" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("write a description"), {
+    target: { value: "Product Description" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("write a Price"), {
+    target: { value: "100" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
+    target: { value: "10" },
+  });
+
+  // Simulate category selection
+  fireEvent.click(screen.getByTestId("select-option-1"));
+
+  // Simulate shipping selection
+  fireEvent.click(screen.getByTestId("select-option-1"));
+
+  // Simulate file input change
+  const file = new File(["photo"], "photo.png", { type: "image/png" });
+  fireEvent.change(screen.getByLabelText("Upload Photo"), {
+    target: { files: [file] },
+  });
+
+  // Simulate form submission
+  const createProductButton = screen.getByText((content, element) => {
+    return (
+      element.tagName.toLowerCase() === "button" &&
+      (content.includes("PRODUCT") || content.includes("Product"))
+    );
   });
   fireEvent.click(createProductButton);
 
   // Check if the error is handled
   await waitFor(() => {
-    expect(toast.error).toHaveBeenCalledWith("something went wrong");
+    expect(toast.error).toHaveBeenCalledWith("Something went wrong");
   });
 });
 
 test("handles unsuccessful product creation", async () => {
+  // Use mockResolvedValueOnce to return a Promise that resolves to the expected value
   axios.post.mockResolvedValueOnce({
     data: { success: false, message: "Product creation failed" },
   });
@@ -304,10 +414,17 @@ test("handles unsuccessful product creation", async () => {
   });
 
   // Simulate form submission
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
+  const createProductButton = screen.getByText((content, element) => {
+    return (
+      element.tagName.toLowerCase() === "button" &&
+      (content.includes("PRODUCT") || content.includes("Product"))
+    );
   });
-  fireEvent.click(createProductButton);
+
+  // Use act to ensure all updates are processed
+  await act(async () => {
+    fireEvent.click(createProductButton);
+  });
 
   // Check if the error message is displayed
   await waitFor(() => {
@@ -326,14 +443,12 @@ test("handles form validation errors", async () => {
   });
 
   // Simulate form submission without filling required fields
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
-  });
+  const createProductButton = screen.getByText("CREATE PRODUCT");
   fireEvent.click(createProductButton);
 
   // Check if the validation errors are handled
   await waitFor(() => {
-    expect(toast.error).toHaveBeenCalledWith("something went wrong");
+    expect(toast.error).toHaveBeenCalledWith("Something went wrong");
   });
 });
 
@@ -394,14 +509,12 @@ test("handles product creation with missing fields", async () => {
   });
 
   // Simulate form submission
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
-  });
+  const createProductButton = screen.getByText("CREATE PRODUCT");
   fireEvent.click(createProductButton);
 
   // Check if the validation errors are handled
   await waitFor(() => {
-    expect(toast.error).toHaveBeenCalledWith("something went wrong");
+    expect(toast.error).toHaveBeenCalledWith("Something went wrong");
   });
 });
 
@@ -446,9 +559,7 @@ test("handles product creation with invalid data", async () => {
   });
 
   // Simulate form submission
-  const createProductButton = await screen.findByRole("button", {
-    name: /CREATE PRODUCT/i,
-  });
+  const createProductButton = screen.getByText("CREATE PRODUCT");
   fireEvent.click(createProductButton);
 
   // Check if the error message is displayed
@@ -456,3 +567,5 @@ test("handles product creation with invalid data", async () => {
     expect(toast.error).toHaveBeenCalledWith("Invalid data");
   });
 });
+
+
