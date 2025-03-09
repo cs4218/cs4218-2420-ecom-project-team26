@@ -182,7 +182,7 @@ describe("Register Controller Test", () => {
     );
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Errro in Registeration",
+      message: "Error in Registration",
       error: new Error("Error saving user model"),
     });
   });
@@ -572,7 +572,7 @@ describe("Update Profile Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error WHile Update profile",
+      message: "Error While Updating profile",
       error,
     });
   });
@@ -600,7 +600,7 @@ describe("Update Profile Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error WHile Update profile",
+      message: "Error While Updating profile",
       error,
     });
   });
@@ -629,7 +629,7 @@ describe("Update Profile Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error WHile Update profile",
+      message: "Error While Updating profile",
       error,
     });
   });
@@ -666,7 +666,7 @@ describe("Update Profile Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith({
       success: true,
-      message: "Profile Updated SUccessfully",
+      message: "Profile Updated Successfully",
       updatedUser,
     });
   });
@@ -699,7 +699,7 @@ describe("Update Profile Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith({
       success: true,
-      message: "Profile Updated SUccessfully",
+      message: "Profile Updated Successfully",
       updatedUser,
     });
   });
@@ -768,7 +768,7 @@ describe("Get Orders Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error WHile Geting Orders",
+      message: "Error While Geting Orders",
       error,
     });
   });
@@ -834,7 +834,7 @@ describe("Get All Orders Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error WHile Geting Orders",
+      message: "Error While Geting Orders",
       error,
     });
   });
@@ -916,7 +916,7 @@ describe("Get Order Status Controller Test", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
-      message: "Error While Updateing Order",
+      message: "Error While Updating Order",
       error,
     });
   });
