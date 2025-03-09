@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  categoryControlller,
+  categoryController,
   createCategoryController,
   deleteCategoryCOntroller,
   singleCategoryController,
@@ -29,7 +29,7 @@ router.put(
 );
 
 //getALl category
-router.get("/get-category", categoryControlller);
+router.get("/get-category", categoryController);
 
 //single category
 router.get("/single-category/:slug", singleCategoryController);

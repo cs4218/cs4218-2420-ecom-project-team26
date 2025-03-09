@@ -68,3 +68,28 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Setting Up and Running Tests
+
+To set up and run tests for your frontend components, follow these steps:
+
+### 1. Add the File Path to the Files You Want to Test in `jest.frontend.config.js`
+
+Ensure that the `testMatch` array in your `jest.frontend.config.js` includes the file paths for the test files you want to run. For example:
+// only run these tests
+testMatch: [
+"<rootDir>/client/src/pages/Auth/*.test.js",
+"<rootDir>/client/src/pages/user/*.test.js",
+"<rootDir>/client/src/context/*.test.js",
+"<rootDir>/client/src/pages/*.test.js",
+"<rootDir>/client/src/components/*.test.js",
+"<rootDir>/client/src/pages/*.test.js"
+]
+
+### 2. Run the Specific Test File
+
+To run a specific test file, use the following command:
+npm run test:frontend -- <Insert filename here>
+
+For example, to run the test for AdminMenu.test.js, use:
+npm run test:frontend -- <Insert filename here>

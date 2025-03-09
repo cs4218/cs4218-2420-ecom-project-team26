@@ -27,8 +27,8 @@ const createCategoryController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      errro,
-      message: "Errro in Category",
+      error,
+      message: "Error in Category",
     });
   }
 };
@@ -59,7 +59,7 @@ const updateCategoryController = async (req, res) => {
 };
 
 // get all cat
-const categoryControlller = async (req, res) => {
+const categoryController = async (req, res) => {
   try {
     const category = await categoryModel.find({});
     res.status(200).send({
@@ -97,13 +97,13 @@ const singleCategoryController = async (req, res) => {
 };
 
 //delete category
-const deleteCategoryCOntroller = async (req, res) => {
+const deleteCategoryController = async (req, res) => {
   try {
     const { id } = req.params;
     await categoryModel.findByIdAndDelete(id);
     res.status(200).send({
       success: true,
-      message: "Categry Deleted Successfully",
+      message: "Category Deleted Successfully",
     });
   } catch (error) {
     console.log(error);
@@ -118,7 +118,7 @@ const deleteCategoryCOntroller = async (req, res) => {
 module.exports = {
   createCategoryController,
   updateCategoryController,
-  categoryControlller,
+  categoryController,
   singleCategoryController,
-  deleteCategoryCOntroller,
+  deleteCategoryController,
 };
