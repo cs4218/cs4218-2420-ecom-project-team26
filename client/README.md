@@ -9,7 +9,7 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:6060](http://localhost:6060) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
@@ -39,32 +39,34 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+## Setting Up and Running Tests
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To set up and run tests for your components, follow these steps:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 1. Add the File Path to the Files You Want to Test in `jest.frontend.config.js` or `jest.backend.config.js`
 
-### Code Splitting
+Ensure that the `testMatch` array in your `jest.frontend.config.js` includes the file paths for the test files you want to run. For example:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+testMatch: [
+"<rootDir>/client/src/pages/Auth/*.test.js",
+"<rootDir>/client/src/pages/user/*.test.js",
+"<rootDir>/client/src/context/*.test.js",
+"<rootDir>/client/src/pages/*.test.js",
+"<rootDir>/client/src/components/*.test.js",
+"<rootDir>/client/src/pages/*.test.js"
+]
 
-### Analyzing the Bundle Size
+### 2. Run the Specific Test File
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+To run the front end files, use the following command:
+npm run test:frontend -- <Insert filename here>
 
-### Making a Progressive Web App
+To run the back end files, use:
+npm run test:backend -- <Insert filename here>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+To run a specific file for front/backend, use:
+npm run test:<frontend> or <backend> -- <Insert filename here>
 
-### Advanced Configuration
+### 3. CI/CD test run
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+https://github.com/cs4218/cs4218-2420-ecom-project-team26/actions/runs/13750035955/job/38449830095

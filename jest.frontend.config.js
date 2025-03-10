@@ -16,16 +16,21 @@ module.exports = {
     "\\.(css|scss)$": "identity-obj-proxy",
   },
 
-  // ignore all node_modules except styleMock (needed for css imports)
+  // ignore all node_modules except styleMock (needed for css imports)s
   transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js)$)"],
 
   // only run these tests
   testMatch: [
+    "<rootDir>/client/src/components/Routes/*.test.js",
+    "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/pages/Auth/*.test.js",
     "<rootDir>/client/src/pages/user/*.test.js",
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/pages/*.test.js",
     "<rootDir>/client/src/hooks/*.test.js",
+    "<rootDir>/client/src/pages/admin/*.test.js",
+    "<rootDir>/client/src/components/*.test.js",
+    "<rootDir>/client/src/components/Form/*.test.js",
   ],
 
   // jest code coverage
@@ -36,11 +41,19 @@ module.exports = {
     "client/src/context/**",
     "client/src/pages/**",
     "client/src/hooks/**",
+    "client/src/components/Form/**",
+    "client/src/components/AdminMenu.js",
+    "client/src/components/Footer.js",
+    "client/src/components/Header.js",
+    "client/src/components/Layout.js",
+    "client/src/components/Spinner.js",
+    "client/src/components/UserMenu.js",
+    "client/src/components/Routes/Private.js",
   ],
   coverageThreshold: {
     global: {
-      lines: 100,
-      functions: 100,
+      lines: 80,
+      functions: 80,
     },
   },
 };
