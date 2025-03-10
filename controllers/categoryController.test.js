@@ -2,7 +2,7 @@ const {
   createCategoryController,
   updateCategoryController,
   deleteCategoryController,
-  categoryControlller,
+  categoryController,
   singleCategoryController,
 } = require("./categoryController");
 const categoryModel = require("../models/categoryModel");
@@ -290,7 +290,7 @@ describe("categoryController test", () => {
 
     categoryModel.find.mockResolvedValue(mockCategories);
 
-    await categoryControlller(req, res);
+    await categoryController(req, res);
 
     expect(categoryModel.find).toHaveBeenCalledWith({});
     expect(res.status).toHaveBeenCalledWith(200);
@@ -304,7 +304,7 @@ describe("categoryController test", () => {
   it("should return 500 if an error occurs", async () => {
     categoryModel.find.mockRejectedValue(new Error("Database error"));
 
-    await categoryControlller(req, res);
+    await categoryController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.send).toHaveBeenCalledWith(
