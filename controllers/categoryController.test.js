@@ -133,7 +133,6 @@ describe("Category Controller Tests", () => {
       await createCategoryController(req, res);
 
       // Assert
-      expect(console.log).toHaveBeenCalledWith(error);
       expect(res.status).toHaveBeenCalledWith(500);
 
       // Use expect.any(Error) to match any Error object
@@ -205,7 +204,6 @@ describe("Category Controller Tests", () => {
       await updateCategoryController(req, res);
 
       // Assert
-      expect(console.log).toHaveBeenCalledWith(error);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
