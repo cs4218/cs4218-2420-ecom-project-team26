@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 // Prevent parallel runs
 test.describe.configure({ mode: "serial" });
 
+const date = new Date().toISOString().replaceAll(":", "_").replaceAll(":", "_");
+
 // REGISTER
 test.describe("Register Page", () => {
   // TODO: Ensure that this user's email does not exist in mongoDB
@@ -11,10 +13,7 @@ test.describe("Register Page", () => {
   }, testInfo) => {
     const newUser = {
       name: "CS 4218 Test Account",
-      email: `test_${testInfo.project.name}_${new Date()
-        .toISOString()
-        .replaceAll(":", "_")
-        .replaceAll(":", "_")}@test.com`,
+      email: `test_${testInfo.project.name}_${date}@test.com`,
       password: "123456",
       phone: "81234567",
       address: "1 Computing Drive",
@@ -48,17 +47,20 @@ test.describe("Register Page", () => {
 // LOGIN
 test.describe("Login Page", () => {
   // TODO: Make sure that the account exist with these info, it's the default admin account
-  const user = {
+  let user = {
     name: "CS 4218 Test Account",
-    email: "cs4218@test.com",
-    password: "cs4218@test.com",
+    email: "",
+    password: "123456",
     phone: "81234567",
     address: "1 Computing Drive",
     dob: "2000-01-01",
-    answer: "password is cs4218@test.com",
+    answer: "football",
   };
 
-  test("user is able to login & see profile info", async ({ page }) => {
+  test("user is able to login & see profile info", async ({
+    page,
+  }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
     await page.getByPlaceholder("Enter Your Email").click();
@@ -73,7 +75,8 @@ test.describe("Login Page", () => {
     await expect(page.locator("h3", { hasText: user.address })).toBeVisible();
   });
 
-  test("user is able to logout", async ({ page }) => {
+  test("user is able to logout", async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
     await page.getByPlaceholder("Enter Your Email").click();
@@ -98,17 +101,17 @@ test.describe("Profile Page", () => {
   // TODO: Make sure that the account exist with these info, it's the default admin account
   const user = {
     name: "CS 4218 Test Account",
-    email: "cs4218@test.com",
-    password: "cs4218@test.com",
+    email: "",
+    password: "123456",
     phone: "81234567",
     address: "1 Computing Drive",
     dob: "2000-01-01",
-    answer: "password is cs4218@test.com",
+    answer: "football",
   };
 
   const newUser = {
     name: "New Account",
-    email: "cs4218@test.com",
+    email: "",
     password: "NewPassword",
     phone: "99998888",
     address: "New Address",
@@ -116,7 +119,9 @@ test.describe("Profile Page", () => {
     answer: "New Answer",
   };
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     // Login before each test case and access the profile page
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
@@ -130,7 +135,9 @@ test.describe("Profile Page", () => {
     await page.getByRole("link", { name: "Profile" }).click();
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     // Reset back user information after all each test case
     await page.goto("http://localhost:3000/dashboard/user/profile");
     await page.getByPlaceholder("Enter Your Name").click();
@@ -144,7 +151,9 @@ test.describe("Profile Page", () => {
     await page.getByRole("button", { name: "UPDATE" }).click();
   });
 
-  test("user is able to update their name", async ({ page }) => {
+  test("user is able to update their name", async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Name").click();
     await page.getByPlaceholder("Enter Your Name").fill(newUser.name);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -159,7 +168,9 @@ test.describe("Profile Page", () => {
     );
   });
 
-  test("user is able to update their password", async ({ page }) => {
+  test("user is able to update their password", async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Password").click();
     await page.getByPlaceholder("Enter Your Password").fill(newUser.password);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -183,7 +194,11 @@ test.describe("Profile Page", () => {
     await expect(page.locator("h3", { hasText: user.address })).toBeVisible();
   });
 
-  test("user is able to update their phone number", async ({ page }) => {
+  test("user is able to update their phone number", async ({
+    page,
+  }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Phone").click();
     await page.getByPlaceholder("Enter Your Phone").fill(newUser.phone);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -197,7 +212,9 @@ test.describe("Profile Page", () => {
     );
   });
 
-  test("user is able to update their address", async ({ page }) => {
+  test("user is able to update their address", async ({ page }, testInfo) => {
+    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Address").click();
     await page.getByPlaceholder("Enter Your Address").fill(newUser.address);
     await page.getByRole("button", { name: "UPDATE" }).click();
