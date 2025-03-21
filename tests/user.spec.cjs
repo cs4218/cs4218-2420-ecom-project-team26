@@ -13,7 +13,7 @@ test.describe("Register Page", () => {
   }, testInfo) => {
     const newUser = {
       name: "CS 4218 Test Account",
-      email: `test_${testInfo.project.name}_${date}@test.com`,
+      email: `test_user_${testInfo.project.name}_${date}@test.com`,
       password: "123456",
       phone: "81234567",
       address: "1 Computing Drive",
@@ -60,7 +60,7 @@ test.describe("Login Page", () => {
   test("user is able to login & see profile info", async ({
     page,
   }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
     await page.getByPlaceholder("Enter Your Email").click();
@@ -76,7 +76,7 @@ test.describe("Login Page", () => {
   });
 
   test("user is able to logout", async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
     await page.getByPlaceholder("Enter Your Email").click();
@@ -120,8 +120,8 @@ test.describe("Profile Page", () => {
   };
 
   test.beforeEach(async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     // Login before each test case and access the profile page
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
@@ -136,8 +136,8 @@ test.describe("Profile Page", () => {
   });
 
   test.afterEach(async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     // Reset back user information after all each test case
     await page.goto("http://localhost:3000/dashboard/user/profile");
     await page.getByPlaceholder("Enter Your Name").click();
@@ -152,8 +152,8 @@ test.describe("Profile Page", () => {
   });
 
   test("user is able to update their name", async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Name").click();
     await page.getByPlaceholder("Enter Your Name").fill(newUser.name);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -169,8 +169,8 @@ test.describe("Profile Page", () => {
   });
 
   test("user is able to update their password", async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Password").click();
     await page.getByPlaceholder("Enter Your Password").fill(newUser.password);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -197,8 +197,8 @@ test.describe("Profile Page", () => {
   test("user is able to update their phone number", async ({
     page,
   }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Phone").click();
     await page.getByPlaceholder("Enter Your Phone").fill(newUser.phone);
     await page.getByRole("button", { name: "UPDATE" }).click();
@@ -213,8 +213,8 @@ test.describe("Profile Page", () => {
   });
 
   test("user is able to update their address", async ({ page }, testInfo) => {
-    user.email = `test_${testInfo.project.name}_${date}@test.com`;
-    newUser.email = `test_${testInfo.project.name}_${date}@test.com`;
+    user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
+    newUser.email = `test_user_${testInfo.project.name}_${date}@test.com`;
     await page.getByPlaceholder("Enter Your Address").click();
     await page.getByPlaceholder("Enter Your Address").fill(newUser.address);
     await page.getByRole("button", { name: "UPDATE" }).click();
