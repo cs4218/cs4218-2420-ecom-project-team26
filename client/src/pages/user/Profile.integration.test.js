@@ -54,7 +54,7 @@ describe("Profile Page Integration Tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, "log");
+    jest.spyOn(console, "log").mockImplementation(() => {});
     localStorage.setItem("auth", JSON.stringify({ user, token }));
   });
 
