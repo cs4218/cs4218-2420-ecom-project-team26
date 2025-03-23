@@ -14,6 +14,10 @@ module.exports = {
   // tells jest how to handle css/scss imports in your tests
   moduleNameMapper: {
     "\\.(css|scss)$": "identity-obj-proxy",
+    // "^@/(.*)$": "<rootDir>/client/src/$1",
+    // "^@pages/(.*)$": "<rootDir>/client/src/pages/$1",
+    // "^@components/(.*)$": "<rootDir>/client/src/components/$1",
+    // "^@context/(.*)$": "<rootDir>/client/src/context/$1",
   },
 
   // ignore all node_modules except styleMock (needed for css imports)s
@@ -31,6 +35,7 @@ module.exports = {
     "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/components/*.test.js",
     "<rootDir>/client/src/components/Form/*.test.js",
+    "<rootDir>/client/src/integration_tests/categoryProductIntegration.test.js",
   ],
 
   // jest code coverage
