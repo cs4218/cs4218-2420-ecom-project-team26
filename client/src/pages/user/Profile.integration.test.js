@@ -59,6 +59,7 @@ describe("Profile Page Integration Tests", () => {
   });
 
   afterEach(() => {
+    localStorage.clear();
     global.console.log.mockRestore();
   });
 
