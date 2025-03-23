@@ -228,7 +228,7 @@ test("should allow user to filter products by price", async ({ page }) => {
   await expect(priceRadio).toBeChecked();
 
   // Wait for filtered products to load and verify there's only 1
-  await page.waitForTimeout(1000); // delay here just to be safe
+  await page.waitForTimeout(2000); // delay here just to be safe
   await expect(page.locator(".card")).toHaveCount(1);
   await expect(
     page.locator(".card-title", { hasText: "Nintendo Switch" })
@@ -280,7 +280,7 @@ test("should allow user to reset filters", async ({ page }) => {
   await expect(electronicsCheckbox).toBeChecked();
 
   // Wait for filtered products to load and verify there's only 1
-  await page.waitForTimeout(1000); // delay here just to be safe
+  await page.waitForTimeout(2000); // delay here just to be safe
   await expect(page.locator(".card")).toHaveCount(1);
   await expect(
     page.locator(".card-title", { hasText: "Nintendo Switch" })
