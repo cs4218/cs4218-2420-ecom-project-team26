@@ -251,17 +251,17 @@ describe("Profile Page Integration Tests", () => {
       // assert
       await waitFor(() => {
         expect(
-          screen.getByRole("heading", { name: updatedUser.name })
+          screen.getByRole("heading", { name: `Name: ${updatedUser.name}` })
         ).toBeInTheDocument();
       });
       await waitFor(() => {
         expect(
-          screen.getByRole("heading", { name: user.email })
+          screen.getByRole("heading", { name: `Email: ${user.email}` })
         ).toBeInTheDocument();
       });
       await waitFor(() => {
         expect(
-          screen.getByRole("heading", { name: updatedUser.address })
+          screen.getByRole("heading", { name: `Address: ${updatedUser.address}` })
         ).toBeInTheDocument();
       });
     });
