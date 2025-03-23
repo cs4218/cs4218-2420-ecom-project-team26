@@ -74,6 +74,9 @@ test.describe("Cart Page - Logged In", () => {
       .click();
     await page.getByRole("link", { name: "Cart" }).click();
 
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     // assert - one item has the name appear twice (once in name, once in desc)
     await expect(page.locator("p", { hasText: "Novel" })).toHaveCount(4);
     await expect(page.locator("p", { hasText: "NUS T-shirt" })).toHaveCount(2);
@@ -86,6 +89,9 @@ test.describe("Cart Page - Logged In", () => {
       .getByRole("button", { name: "Remove" })
       .first()
       .click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
 
     // assert
     await expect(page.locator("p", { hasText: "Novel" })).toHaveCount(2);
@@ -105,6 +111,9 @@ test.describe("Cart Page - Logged In", () => {
     await frame.locator("#cvv").fill("321");
     await page.getByRole("button", { name: "Make Payment" }).click();
 
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     // assert
     await expect(page.locator("h1", { hasText: "All Orders" })).toHaveCount(1); // necessary to ensure page loaded
     await expect(page.locator("p", { hasText: "Novel" })).toHaveCount(2);
@@ -115,6 +124,9 @@ test.describe("Cart Page - Logged In", () => {
     // act
     await page.getByRole("link", { name: "Cart" }).click();
     await page.getByRole("button", { name: "Update Address" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
 
     // assert
     await expect(page).toHaveURL(
@@ -143,6 +155,9 @@ test.describe("Cart Page - Logged Out", () => {
       .click();
     await page.getByRole("link", { name: "Cart" }).click();
 
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     // assert - one item has the name appear twice (once in name, once in desc)
     await expect(page.locator("p", { hasText: "Novel" })).toHaveCount(4);
     await expect(page.locator("p", { hasText: "NUS T-shirt" })).toHaveCount(2);
@@ -166,11 +181,18 @@ test.describe("Cart Page - Logged Out", () => {
       .getByRole("button", { name: "ADD TO CART" })
       .click();
     await page.getByRole("link", { name: "Cart" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     await page
       .locator(`.card:has-text("Novel")`)
       .getByRole("button", { name: "Remove" })
       .first()
       .click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
 
     // assert
     await expect(page.locator("p", { hasText: "Novel" })).toHaveCount(2);
@@ -187,7 +209,14 @@ test.describe("Cart Page - Logged Out", () => {
       .getByRole("button", { name: "ADD TO CART" })
       .click();
     await page.getByRole("link", { name: "Cart" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     await page.getByRole("button", { name: "Plase Login to checkout" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
 
     // assert
     await expect(page.locator("h4", { hasText: "LOGIN FORM" })).toHaveCount(1); // necessary to ensure page loaded
@@ -210,10 +239,21 @@ test.describe("Cart Page - Logged Out", () => {
       .getByRole("button", { name: "ADD TO CART" })
       .click();
     await page.getByRole("link", { name: "Cart" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     await page.getByRole("button", { name: "Plase Login to checkout" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
+
     await page.getByPlaceholder("Enter Your Email").fill(user.email);
     await page.getByPlaceholder("Enter Your Password").fill(user.password);
     await page.getByRole("button", { name: "LOGIN" }).click();
+
+    // delay to be safe
+    await page.waitForTimeout(500);
 
     // assert
     await expect(page).toHaveURL("http://localhost:3000/cart"); // necessary to ensure page loaded
