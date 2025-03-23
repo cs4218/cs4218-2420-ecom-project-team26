@@ -6,7 +6,7 @@ import { useAuth } from "../../context/auth";
 import Layout from "./../../components/Layout";
 const Profile = () => {
   //context
-  const [auth, setAuth] = useAuth();
+  const [auth, setAuth, loading] = useAuth();
   //state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,12 +16,14 @@ const Profile = () => {
 
   //get user data
   useEffect(() => {
-    const { email, name, phone, address } = auth?.user;
-    setName(name);
-    setPhone(phone);
-    setEmail(email);
-    setAddress(address);
-  }, [auth?.user]);
+    if (!loading && auth?.user) {
+      const { email, name, phone, address } = auth?.user;
+      setName(name);
+      setPhone(phone);
+      setEmail(email);
+      setAddress(address);
+    }
+  }, [auth?.user, loading]);
 
   // form function
   const handleSubmit = async (e) => {
