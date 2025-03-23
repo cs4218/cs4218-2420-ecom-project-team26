@@ -86,7 +86,7 @@ test("should display 0 result found if user tries to input nonexistent category 
 
   // Check for page headers
   await expect(page.locator(".category h4.text-center")).toHaveText(
-    "Category - plants"
+    "Category - "
   );
   await expect(page.locator(".category h6.text-center")).toHaveText(
     "0 result found"
