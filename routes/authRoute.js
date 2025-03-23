@@ -8,6 +8,7 @@ const {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
+  getAllUsersController,
 } = require("../controllers/authController.js");
 
 const { isAdmin, requireSignIn } = require("../middlewares/authMiddleware.js");
@@ -53,5 +54,8 @@ router.put(
   isAdmin,
   orderStatusController
 );
+
+//get all users
+router.get("/all-users", requireSignIn, isAdmin, getAllUsersController);
 
 module.exports = router;

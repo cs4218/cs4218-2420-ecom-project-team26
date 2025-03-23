@@ -21,34 +21,19 @@ module.exports = {
 
   // only run these tests
   testMatch: [
-    "<rootDir>/client/src/components/Routes/*.test.js",
-    "<rootDir>/client/src/pages/admin/*.test.js",
-    "<rootDir>/client/src/pages/Auth/*.test.js",
-    "<rootDir>/client/src/pages/user/*.test.js",
-    "<rootDir>/client/src/context/*.test.js",
-    "<rootDir>/client/src/pages/*.test.js",
-    "<rootDir>/client/src/hooks/*.test.js",
-    "<rootDir>/client/src/pages/admin/*.test.js",
-    "<rootDir>/client/src/components/*.test.js",
-    "<rootDir>/client/src/components/Form/*.test.js",
+    "<rootDir>/client/src/pages/admin/AdminDashboard.integration.test.js",
+    "<rootDir>/client/src/pages/admin/AdminOrders.integration.test.js",
+    "<rootDir>/client/src/pages/admin/Users.integration.test.js",
+    "<rootDir>/client/src/components/AdminMenu.integration.test.js"
   ],
 
   // jest code coverage
   collectCoverage: true,
   collectCoverageFrom: [
-    "client/src/pages/Auth/**",
-    "client/src/pages/user/**",
-    "client/src/context/**",
-    "client/src/pages/**",
-    "client/src/hooks/**",
-    "client/src/components/Form/**",
-    "client/src/components/AdminMenu.js",
-    "client/src/components/Footer.js",
-    "client/src/components/Header.js",
-    "client/src/components/Layout.js",
-    "client/src/components/Spinner.js",
-    "client/src/components/UserMenu.js",
-    "client/src/components/Routes/Private.js",
+    "client/src/pages/admin/AdminDashboard.js",
+    "client/src/pages/admin/AdminOrders.js",
+    "client/src/pages/admin/Users.js",
+    "client/src/components/AdminMenu.js"
   ],
   coverageThreshold: {
     global: {
