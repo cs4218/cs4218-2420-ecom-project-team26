@@ -3,10 +3,10 @@ test.describe.configure({ mode: "serial" });
 
 test.describe('Admin Dashboard Tests', () => {
   const adminUser = {
-    name: "CS 4218 Test Account",
-    email: "cs4218@test.com",
-    password: "cs4218@test.com",
-    phone: "81234567"
+    name: "Test Admin",
+    email: "admin369@test.com",
+    password: "123456",
+    phone: "1234567890"
   };
 
   test.beforeEach(async ({ page }) => {
@@ -20,7 +20,8 @@ test.describe('Admin Dashboard Tests', () => {
     await page.getByPlaceholder("Enter Your Password").fill(adminUser.password);
     await page.getByRole("button", { name: "LOGIN" }).click();
 
-    await page.getByRole("button", { name: adminUser.name }).click();
+    console.log()
+    await page.getByRole("button", { name: adminUser.name.toUpperCase() }).click();
     await page.getByRole("link", { name: "Dashboard" }).click();
     
     await page.waitForURL('**/dashboard/admin');
@@ -29,9 +30,9 @@ test.describe('Admin Dashboard Tests', () => {
   test('displays admin dashboard with correct user info', async ({ page }) => {
     await expect(page.locator('h4:has-text("Admin Panel")')).toBeVisible();
 
-    await expect(page.locator('h3', { hasText: "Admin Name : CS 4218 Test Account" })).toBeVisible();
-    await expect(page.locator('h3', { hasText: "Admin Email : cs4218@test.com" })).toBeVisible();
-    await expect(page.locator('h3', { hasText: "Admin Contact : 81234567" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Admin Name : Test Admin" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Admin Email : admin369@test.com" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Admin Contact : 1234567890" })).toBeVisible();
     
     await expect(page.locator('.dashboard-menu')).toBeVisible();
   });
@@ -120,11 +121,11 @@ test.describe('Admin Dashboard Tests', () => {
 
 test.describe('User Dashboard Tests', () => {
   const regularUser = {
-    name: "aa",
-    email: "aa@aa.com",
-    password: "aa",
-    phone: "111",
-    address: "aaa"
+    name: "CS 4218 Test Account",
+    email: "cs4218@test.com",
+    password: "cs4218@test.com",
+    phone: "81234567",
+    address: "1 Computing Drive"
   };
 
   test.beforeEach(async ({ page }) => {
@@ -142,9 +143,9 @@ test.describe('User Dashboard Tests', () => {
   test('displays user dashboard with correct user info', async ({ page }) => {
     await expect(page.locator('h4:has-text("Dashboard")')).toBeVisible();
     
-    await expect(page.locator('h3', { hasText: "Name: aa" })).toBeVisible();
-    await expect(page.locator('h3', { hasText: "Email: aa@aa.com" })).toBeVisible();
-    await expect(page.locator('h3', { hasText: "Address: aaa" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Name: CS 4218 Test Account" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Email: cs4218@test.com" })).toBeVisible();
+    await expect(page.locator('h3', { hasText: "Address: 1 Computing Drive" })).toBeVisible();
     
   });
 
