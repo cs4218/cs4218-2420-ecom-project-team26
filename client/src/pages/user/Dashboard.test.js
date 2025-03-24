@@ -62,9 +62,9 @@ describe("User Dashboard", () => {
     useAuth.mockReturnValue([{ user: mockUser }]);
     
     renderDashboard();
-    expect(screen.getByText(mockUser.name)).toBeInTheDocument();
-    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
-    expect(screen.getByText(mockUser.address)).toBeInTheDocument();
+    expect(screen.getByText(`Name: ${mockUser.name}`)).toBeInTheDocument();
+    expect(screen.getByText(`Email: ${mockUser.email}`)).toBeInTheDocument();
+    expect(screen.getByText(`Address: ${mockUser.address}`)).toBeInTheDocument();
   });
 
   test("handles missing user data", () => {
