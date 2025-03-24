@@ -68,8 +68,7 @@ test.describe("Login Page", () => {
     user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
 
     // act
-    await page.goto("http://localhost:3000/");
-    await page.getByRole("link", { name: "Login" }).click();
+    
     await page.getByPlaceholder("Enter Your Email").click();
     await page.getByPlaceholder("Enter Your Email").fill(user.email);
     await page.getByPlaceholder("Enter Your Password").click();
