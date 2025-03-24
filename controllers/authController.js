@@ -229,7 +229,7 @@ const getAllOrdersController = async (req, res) => {
       .find({})
       .populate("products", "-photo")
       .populate("buyer", "name")
-      .sort({ createdAt: "-1" });
+      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     console.log(error);
@@ -262,6 +262,25 @@ const orderStatusController = async (req, res) => {
   }
 };
 
+//get all users
+const getAllUsersController = async (req, res) => {
+  try {
+    const users = await userModel
+      .find({})
+      .select('-password -answer')  // Exclude sensitive fields
+      .sort({ createdAt: -1 });    // Newest first
+    
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while getting users",
+      error
+    });
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
@@ -271,4 +290,5 @@ module.exports = {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
+  getAllUsersController,
 };

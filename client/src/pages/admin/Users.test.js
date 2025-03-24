@@ -4,6 +4,11 @@ import { render, screen, within } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Users from "./Users";
 
+jest.mock("../../context/auth", () => ({
+  useAuth: () => [{ token: 'test-token', user: { role: 1 } }, jest.fn()],
+  AuthProvider: ({ children }) => children
+}));
+
 // Mock Layout component
 jest.mock("../../components/Layout", () => {
   return ({ children, title }) => (
