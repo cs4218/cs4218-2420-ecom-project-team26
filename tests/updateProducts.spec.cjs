@@ -153,7 +153,6 @@ test.describe("Admin Product Management", () => {
       await page.waitForTimeout(2000);
       
       console.log("URL after forced login:", page.url());
-      await page.screenshot({ path: 'after-forced-login.png' });
     }
     
     await expect(page.url()).toContain('/dashboard/admin');
@@ -241,7 +240,6 @@ test.describe("Admin Product Management", () => {
     await page.goto('http://localhost:3000/dashboard/admin/products');
     await page.waitForTimeout(2000);
     
-    await page.screenshot({ path: 'product-list-before-edit.png' });
     
     const productRows = await page.locator('tr').all();
     
@@ -360,8 +358,6 @@ test.describe("Admin Product Management", () => {
     await page.getByRole('button', { name: /delete product/i }).click();
     
     await page.waitForTimeout(2000);
-    
-    await page.screenshot({ path: 'after-product-delete.png' });
     
     expect(page.url()).toContain('/dashboard/admin/products');
     
