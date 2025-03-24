@@ -2,6 +2,8 @@
 
 To set up and run tests for your components, follow these steps:
 
+Navigate to the project directory cs4218-2420-ecom-project-team26\ and run `npm i`, then navigate to cs4218-2420-ecom-project-team26\client and run `npm i` once again.
+
 ### 1. Add the File Path to the Files You Want to Test in `jest.frontend.config.js` or `jest.backend.config.js`
 
 Ensure that the `testMatch` array in your `jest.frontend.config.js` includes the file paths for the test files you want to run. For example:
