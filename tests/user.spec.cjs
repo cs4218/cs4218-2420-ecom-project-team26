@@ -68,10 +68,11 @@ test.describe("Login Page", () => {
     user.email = `test_user_${testInfo.project.name}_${date}@test.com`;
 
     // act
-    
-    await page.getByPlaceholder("Enter Your Email").click();
+    await page.goto("http://localhost:3000/");
+    await page.getByRole("link", { name: "Login" }).click();
+    await page.getByPlaceholder("Enter Your Email").isEditable();
     await page.getByPlaceholder("Enter Your Email").fill(user.email);
-    await page.getByPlaceholder("Enter Your Password").click();
+    await page.getByPlaceholder("Enter Your Password").isEditable();
     await page.getByPlaceholder("Enter Your Password").fill(user.password);
     await page.getByRole("button", { name: "LOGIN" }).click();
 
@@ -100,9 +101,9 @@ test.describe("Login Page", () => {
     // act
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
-    await page.getByPlaceholder("Enter Your Email").click();
+    await page.getByPlaceholder("Enter Your Email").isEditable();
     await page.getByPlaceholder("Enter Your Email").fill(user.email);
-    await page.getByPlaceholder("Enter Your Password").click();
+    await page.getByPlaceholder("Enter Your Password").isEditable();
     await page.getByPlaceholder("Enter Your Password").fill(user.password);
     await page.getByRole("button", { name: "LOGIN" }).click();
 
@@ -160,9 +161,9 @@ test.describe("Profile Page", () => {
     // Login before each test case and access the profile page
     await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "Login" }).click();
-    await page.getByPlaceholder("Enter Your Email").click();
+    await page.getByPlaceholder("Enter Your Email").isEditable();
     await page.getByPlaceholder("Enter Your Email").fill(user.email);
-    await page.getByPlaceholder("Enter Your Password").click();
+    await page.getByPlaceholder("Enter Your Password").isEditable();
     await page.getByPlaceholder("Enter Your Password").fill(user.password);
     await page.getByRole("button", { name: "LOGIN" }).click();
 
