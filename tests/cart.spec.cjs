@@ -112,7 +112,7 @@ test.describe("Cart Page - Logged In", () => {
     await page.getByRole("button", { name: "Make Payment" }).click();
 
     // delay to be safe
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
 
     // assert
     await expect(page.locator("h1", { hasText: "All Orders" })).toHaveCount(1); // necessary to ensure page loaded
